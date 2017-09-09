@@ -1,0 +1,419 @@
+<html>
+<head>
+<title>TECHNOPOLY ADMIN</title>
+</head>
+<body>
+<script language="javascript">
+var getUserNameObject = false;
+var getCurrentRoundObject = false;
+var changeRoundObject = false;
+var getGameStatusObject = false;
+var changeGameStatusObject = false;
+var getStatsObject = false;
+var getUserDetailsObject = false;
+var createUsersObject = false;
+var makeUserActiveObject =false;
+var makeUserInactiveObject =false;
+var manageUsersObject = false;
+var manageQObject =false;
+
+if (window.XMLHttpRequest) {
+	getUserNameObject = new XMLHttpRequest();
+	getCurrentRoundObject = new XMLHttpRequest();
+	changeRoundObject = new XMLHttpRequest();
+	getGameStatusObject = new XMLHttpRequest();
+	changeGameStatusObject = new XMLHttpRequest();
+	getStatsObject = new XMLHttpRequest();
+	getUserDetailsObject = new XMLHttpRequest();
+	createUsersObject = new XMLHttpRequest();
+	makeUserActiveObject = new XMLHttpRequest();
+	makeUserInactiveObject = new XMLHttpRequest();
+	manageUsersObject = new XMLHttpRequest();
+	manageQObject = new XMLHttpRequest();
+} else if (window.ActiveXObject) {
+	getUserNameObject = new ActiveXObject("Microsoft.XMLHTTP");
+	getCurrentRoundObject = new ActiveXObject("Microsoft.XMLHTTP");
+	changeRoundObject = new ActiveXObject("Microsoft.XMLHTTP");
+	getGameStatusObject = new ActiveXObject("Microsoft.XMLHTTP");
+	changeGameStatusObject = new ActiveXObject("Microsoft.XMLHTTP");
+	getStatsObject = new ActiveXObject("Microsoft.XMLHTTP");
+	getUserDetailsObject = new ActiveXObject("Microsoft.XMLHTTP");
+	createUsersObject = new ActiveXObject("Microsoft.XMLHTTP");
+	makeUserActiveObject = new ActiveXObject("Microsoft.XMLHTTP");
+	makeUserInactiveObject = new ActiveXObject("Microsoft.XMLHTTP");
+	manageUsersObject = new ActiveXObject("Microsoft.XMLHTTP");
+	manageQObject = new ActiveXObject("Microsoft.XMLHTTP");
+}
+
+function getUsername(){
+ if(getUserNameObject){			 
+          getUserNameObject.open("GET","adminhome.jsp?function=getUserName",true);
+
+          getUserNameObject.onreadystatechange = function(){
+            if (getUserNameObject.readyState == 4 && getUserNameObject.status == 200){ 
+                document.getElementById("username1").innerHTML = getUserNameObject.responseText;
+                document.getElementById("username2").innerHTML = getUserNameObject.responseText;
+                document.getElementById("username3").innerHTML = getUserNameObject.responseText;
+				}
+          }
+		  
+		  getUserNameObject.send(null);
+ } 
+}
+getUsername();
+
+function getCurrentRound(){
+ if(getCurrentRoundObject){			 
+          getCurrentRoundObject.open("GET","adminhome.jsp?function=getCurrentRound",true);
+
+          getCurrentRoundObject.onreadystatechange = function(){
+            if (getCurrentRoundObject.readyState == 4 && getCurrentRoundObject.status == 200) 
+                document.getElementById("currentround").innerHTML = getCurrentRoundObject.responseText;
+          }
+		  
+		  getCurrentRoundObject.send(null);
+ } 
+}
+getCurrentRound();
+
+function changeRound(){
+ if(changeRoundObject){
+		  var round;
+		  if(document.getElementById("scr1").checked)
+			round="one";
+		  else
+			round="two";
+          changeRoundObject.open("GET","adminhome.jsp?function=changeRound&round="+round,true);
+
+          changeRoundObject.onreadystatechange = function(){
+            if (changeRoundObject.readyState == 4 && changeRoundObject.status == 200) 
+                document.getElementById("currentround").innerHTML = changeRoundObject.responseText;
+          }
+		  
+		  changeRoundObject.send(null);
+ } 
+}
+
+function getGameStatus(){
+ if(getGameStatusObject){			 
+          getGameStatusObject.open("GET","adminhome.jsp?function=getGameStatus",true);
+
+          getGameStatusObject.onreadystatechange = function(){
+            if (getGameStatusObject.readyState == 4 && getGameStatusObject.status == 200) 
+                document.getElementById("gamestatus").innerHTML = getGameStatusObject.responseText;
+          }
+		  
+		  getGameStatusObject.send(null);
+ } 
+}
+getGameStatus();
+
+function changeGameStatus(){
+ if(changeGameStatusObject){
+		  var round;
+		  if(document.getElementById("gs1").checked)
+			gameStatus="ON";
+		  else if(document.getElementById("gs2").checked)
+			gameStatus="NOT YET STARTED";
+		  else
+			gameStatus="COMPLETED";
+          changeGameStatusObject.open("GET","adminhome.jsp?function=changeGameStatus&gameStatus="+gameStatus,true);
+
+          changeGameStatusObject.onreadystatechange = function(){
+            if (changeGameStatusObject.readyState == 4 && changeGameStatusObject.status == 200) 
+                document.getElementById("gamestatus").innerHTML = changeGameStatusObject.responseText;
+          }
+		  
+		  changeGameStatusObject.send(null);
+ } 
+}
+
+function createUsers(){
+		  var users=document.getElementById("noofusers").value;
+		  document.getElementById("noofusers").value="";
+		  var regex=/[0-9]+/;
+	if(regex.test(users)){
+		if(createUsersObject){
+          createUsersObject.open("GET","adminhome.jsp?function=createUsers&users="+users,true);
+
+          createUsersObject.onreadystatechange = function(){
+            if (createUsersObject.readyState == 4 && createUsersObject.status == 200) 
+                document.getElementById("createUsersMessage").innerHTML = createUsersObject.responseText;
+          }
+		  
+		  createUsersObject.send(null);
+		  getStats();
+		}
+		getUserDetails('freeusers');
+	}
+	else
+		document.getElementById("createUsersMessage").innerHTML="Enter numbers only";
+}
+
+function getStats(){
+ if(getStatsObject){			 
+          getStatsObject.open("GET","adminhome.jsp?function=getStats",true);
+
+          getStatsObject.onreadystatechange = function(){
+            if (getStatsObject.readyState == 4 && getStatsObject.status == 200) 
+                document.getElementById("userstats").innerHTML = getStatsObject.responseText;
+          }
+		  
+		  getStatsObject.send(null);
+ } 
+}
+getStats();
+
+function getUserDetails(status){
+ if(getUserDetailsObject){
+          getUserDetailsObject.open("GET","adminhome.jsp?function=getUserDetails&status="+status,true);
+
+          getUserDetailsObject.onreadystatechange = function(){
+            if (getUserDetailsObject.readyState == 4 && getUserDetailsObject.status == 200) 
+                document.getElementById("userdetails").innerHTML = getUserDetailsObject.responseText;
+          }
+		  
+		  getUserDetailsObject.send(null);
+ } 
+}
+
+function makeUserInactive(userid){
+	if(makeUserInactiveObject){
+          makeUserInactiveObject.open("GET","adminhome.jsp?function=makeUserInactive&userid="+userid,true);
+
+          makeUserInactiveObject.onreadystatechange = function(){
+            if (makeUserInactiveObject.readyState == 4 && makeUserInactiveObject.status == 200) 
+                document.getElementById("msg3").innerHTML = makeUserInactiveObject.responseText;
+          }
+		  
+		  makeUserInactiveObject.send(null);
+	}
+	var row=document.getElementById('activeuser'+userid);
+	row.parentNode.removeChild(row);
+	getStats();
+}
+
+function makeUserActive(userid){
+	if(makeUserActiveObject){
+          makeUserActiveObject.open("GET","adminhome.jsp?function=makeUserActive&userid="+userid,true);
+
+          makeUserActiveObject.onreadystatechange = function(){
+            if (makeUserActiveObject.readyState == 4 && makeUserActiveObject.status == 200) 
+                document.getElementById("msg3").innerHTML = makeUserActiveObject.responseText;
+          }
+		  
+		  makeUserActiveObject.send(null);
+	}
+	var row=document.getElementById('inactiveuser'+userid);
+	row.parentNode.removeChild(row);
+	getStats();
+}
+
+function manageUsers(fun,elementid){
+	if(manageUsersObject){
+		  var condition=document.getElementById(elementid).value;
+		  document.getElementById(elementid).value="";
+		  document.getElementById("manageallusers").value="0";
+		  var regex=/[0-9]+/;
+		  if(regex.test(condition)){
+          manageUsersObject.open("GET","adminhome.jsp?function=manageUsers&fun="+fun+"&condition="+condition,true);
+
+          manageUsersObject.onreadystatechange = function(){
+            if (manageUsersObject.readyState == 4 && manageUsersObject.status == 200) 
+                document.getElementById(elementid+'1').innerHTML = manageUsersObject.responseText;
+          }
+		  
+		  manageUsersObject.send(null);
+		  }
+		  else
+			document.getElementById(elementid+'1').innerHTML="Enter number only";
+	}
+	getStats();
+	document.getElementById("userdetails").innerHTML="";
+}
+
+function resetUserPassword(){
+	var userid=document.getElementById("useruserid").value;
+	if(manageUsersObject){
+          manageUsersObject.open("GET","adminhome.jsp?function=resetUserPassword&userid="+userid,true);
+
+          manageUsersObject.onreadystatechange = function(){
+            if (manageUsersObject.readyState == 4 && manageUsersObject.status == 200) 
+                document.getElementById("singleuserdetails1").innerHTML = manageUsersObject.responseText;
+          }
+		  
+		  manageUsersObject.send(null);
+	}
+}
+
+function flipUserStatus(){
+	var userid=document.getElementById("useruserid").value;
+	var status=document.getElementById("useruserstatus").value;
+	if(status=='active')
+		status='inactive';
+	else
+		status='active';
+	if(manageUsersObject){
+          manageUsersObject.open("GET","adminhome.jsp?function=flipUserStatus&userid="+userid+"&status="+status,true);
+
+          manageUsersObject.onreadystatechange = function(){
+            if (manageUsersObject.readyState == 4 && manageUsersObject.status == 200) 
+                document.getElementById("useruserstatus").value = manageUsersObject.responseText;
+          }
+		  
+		  manageUsersObject.send(null);
+	}
+	getStats();
+	document.getElementById("userdetails").innerHTML="";
+}
+
+function updateSingleUser(){
+	var userid=document.getElementById("useruserid").value;
+	var phone=document.getElementById("userphone").value;
+	var email=document.getElementById("useremail").value;
+	var bal=document.getElementById("userbalance").value;
+	if(manageUsersObject){
+          manageUsersObject.open("GET","adminhome.jsp?function=updateSingleUser&userid="+userid+"&phone="+phone+"&email="+email+"&balance="+bal,true);
+
+          manageUsersObject.onreadystatechange = function(){
+            if (manageUsersObject.readyState == 4 && manageUsersObject.status == 200) 
+                document.getElementById("singleuserdetails1").innerHTML = manageUsersObject.responseText;
+          }
+		  
+		  manageUsersObject.send(null);
+	}
+	getStats();
+	document.getElementById("userdetails").innerHTML="";
+}
+
+function manageQ(func,elementid){
+	var getQuestionId;
+	var editQuestionType;
+	var insertQuestionType;
+	var question=document.getElementById("question").value;
+	var optiona=document.getElementById("optionA").value;
+	var optionb=document.getElementById("optionB").value;
+	var optionc=document.getElementById("optionC").value;
+	var optiond=document.getElementById("optionD").value;
+	var correctans=document.getElementById("correctAnswer").value;
+	if(func=='updateQuestion'){
+	getQuestionId=document.getElementById("getQuestionId").value;
+	editQuestionType=document.getElementById("editQT").value;
+	}
+	if(func=='insertQuestion'){
+		if(document.getElementById("qt1").checked)
+		insertQuestionType='violet';
+		else if(document.getElementById("qt2").checked)
+		insertQuestionType='blue';
+		else if(document.getElementById("qt3").checked)
+		insertQuestionType='red';
+		else if(document.getElementById("qt4").checked)
+		insertQuestionType='gold';
+	}
+	var str="&getQuestionId="+getQuestionId+"&editQuestionType="+editQuestionType+"&insertQuestionType="+insertQuestionType+"&question="+question+"&optiona="+optiona+"&optionb="+optionb+"&optionc="+optionc+"&optiond="+optiond+"&correctanswer="+correctans;
+	if(manageQObject){
+          manageQObject.open("GET","adminhome.jsp?function=manageQ&func="+func+str,true);
+
+          manageQObject.onreadystatechange = function(){
+            if (manageQObject.readyState == 4 && manageQObject.status == 200) 
+                document.getElementById(elementid).innerHTML = manageQObject.responseText;
+          }
+		  
+		  manageQObject.send(null);
+	}
+}
+
+</script>
+<link rel="stylesheet" href="css/adminhome.css">
+<div class="container">
+  <div id="cloud-intro">
+	<div class="form1">
+
+    <input type="radio" id="rad-1" name="tabs" >
+    <label for="rad-1" class="tab tab-1">Round</label>
+	
+	<input type="radio" id="rad-2" name="tabs">
+	<label for="rad-2" class="tab tab-2">Game Status</label>
+	
+	<input type="radio" id="rad-3" name="tabs">
+	<label for="rad-3" class="tab tab-3">User Statistics</label>
+	
+	<input type="radio" id="rad-4" name="tabs">
+	<label for="rad-4" class="tab tab-4">Manage Users</label>
+ 
+	<input type="radio" id="rad-5" name="tabs" checked>
+	<label for="rad-5" class="tab tab-5">Manage Q's</label> 
+ 
+	<input type="radio" id="rad-6" name="tabs" checked>
+	<label for="rad-6" class="tab tab-6">You</label>
+
+    <fieldset class="tab-1-content">
+		<div>
+		Hello <p id="username1">error!</p><br><br>
+		Current round is <p style="color:red;font-size:1.5em" id="currentround">error!</p><br><br>
+		If you want to change the round you can change it here<br>
+        <input type="radio" id="scr1" name="selectedcurrentround" value="one" checked>One
+		<input type="radio" id="scr2" name="selectedcurrentround" value="two">Two<br>
+		<button onclick="changeRound()" >change round</button>
+		</div>
+    </fieldset>
+
+    <fieldset class="tab-2-content">
+		<div>
+		Hello <p id="username2">error!</p><br><br>
+		Current status of game is <p style="color:red;font-size:1.5em" id="gamestatus">error!</p><br><br>
+		If you want to change the status you can change it here<br>
+        <input type="radio" id="gs1" name="selectedgamestatus" value="on" style="margin:0" checked>ON<br>
+		<input type="radio" id="gs2" name="selectedgamestatus" value="Not Yet Started">NOT YET STARTED<br>
+		<input type="radio" id="gs3" name="selectedgamestatus" value="Completed">COMPLETED<br>
+		<button onclick="changeGameStatus()" >change status</button>
+		</div>
+    </fieldset>
+
+    <fieldset class="tab-3-content">
+		<div id="msg3"></div>
+		<input type="button" value="refresh" onclick="getStats()"/>
+        <div id="userstats">Something is not correct!</div><br>
+		<input type="button" value="Active Users" onclick="getUserDetails('active')"/>
+		<input type="button" value="Inactive Users" onclick="getUserDetails('inactive')"/>
+		<input type="button" value="Unregistered Accounts" onclick="getUserDetails('freeusers')"/>
+		<div id="userdetails" style="overflow-y:auto;height:260px"></div>
+    </fieldset>
+	
+	<fieldset class="tab-4-content">
+        <b>Create Users</b><br><br>
+		Number of users : 
+		<input type="text" id="noofusers"/>
+		<input type="button" onclick="createUsers()" value="create users"><br>
+		<div id="createUsersMessage"></div><br>
+		<hr>
+		<input type="button" onclick="manageUsers('activateAll','manageallusers')" value="Activate All"/>
+		<input type="button" onclick="manageUsers('deactivateAll','manageallusers')" value="Deactivate All"/><br>
+		<input type="hidden" value="0" id="manageallusers"/>
+		<div id="manageallusers1"></div><br>
+		<input type="button" onclick="manageUsers('getUserCount','getUserCountCondition')" value="Get User Count"/> whose balance is greater than or equals <input type="text" id="getUserCountCondition"/><div id='getUserCountCondition1'></div><br>
+		<input type="button" onclick="manageUsers('activate','activeUsersCondition')" value="Activate"/> users whose balance is greater than or equals <input type="text" id="activeUsersCondition"/><div id='activeUsersCondition1'></div><br>
+		<hr>
+		<input type="button" onclick="manageUsers('get','singleuserdetails')" value="get/edit"/> user with user id <input type="text" id="singleuserdetails"/><br>
+		<div id="singleuserdetails1"></div>
+    </fieldset>
+	
+	<fieldset class="tab-5-content">
+        <input type="button" value="Insert Question" onclick="manageQ('insertForm','manageQuestionsForm')"/>
+        <input type="button" value="View/Edit Question" onclick="manageQ('editForm','manageQuestionsForm')"/>
+        <input type="button" value="Delete Question" onclick="manageQ('deleteForm','manageQuestionsForm')"/><br>
+		<div id="manageQuestionsForm"></div>
+    </fieldset>
+	
+	<fieldset class="tab-6-content">
+       <p style="font-size:1.5em">Welcome <p id="username3">error!</p></p><br><br>
+	   <form action="index.jsp">
+	   <input type="submit" value="logout">
+	   </form>
+    </fieldset>
+
+</div>
+</div>
+</div>
+</body>
+</html>

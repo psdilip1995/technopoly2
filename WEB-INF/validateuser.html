@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <title>TECHNOPOLY</title>
+  <link rel="stylesheet" href="css/validateuser.css">
+</head>
+<body>
+  <script>
+  var XMLObject = false;
+  if(window.XMLHttpRequest)
+	XMLObject = new XMLHttpRequest();
+  else if (window.ActiveXObject)
+    XMLObject = new ActiveXObject("Microsoft.XMLHTTP");
+  
+  var x= setInterval(function getRoundDetails(){
+	if(XMLObject){
+		XMLObject.open("GET","user.jsp?function=getRoundDetails",true);
+			
+		XMLObject.onreadystatechange = function(){
+			if(XMLObject.readyState == 4 && XMLObject.status == 200){
+				document.getElementById("message").innerHTML=XMLObject.responseText;
+			}
+		}
+			
+		XMLObject.send(null);
+	}
+  },5000);
+  </script>
+  <div class='iphone' id='iphone'>
+  <div class='iphone_camera'></div>
+  <div class='iphone_ear-speaker'>
+    <div class='iphone_ear-speaker-side'></div>
+  </div>
+  <div class='iphone_overlay'></div>
+  <div class='iphone_screen'>
+    <ul class='iphone_screen-signal'>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+      <li></li>
+    </ul>
+    <span class='iphone_screen-operator'>Tele2 4G</span>
+    <span class='iphone_screen-lock'>
+      <i class='fa fa-lock'></i>
+    </span>
+    <div class='iphone_screen-time' id='message'>Please Wait</div>
+    <div class='iphone_screen-date' id='date'></div>
+    <span class='iphone_screen-battery' id='battery'>
+      97%
+      <i class='fa fa-battery-full'></i>
+    </span>
+    <ul class='iphone_screen-text'>
+      <li>
+        <i class='fa fa-camera'></i>
+      </li>
+      <li>
+        <i class='fa fa-camera'></i>
+      </li>
+      <li>
+        <i class='fa fa-camera'></i>
+      </li>
+    </ul>
+  </div>
+  <div class='iphone_home' id='home'></div>
+  <div class='iphone_silent-mode'>
+    <div class='iphone_silent-mode-side'></div>
+  </div>
+  <ul class='iphone_sound'>
+    <li></li>
+    <li></li>
+  </ul>
+  <ul class='iphone_bottom-right-speaker'>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+  <div class='iphone_bottom-middle-charge'>
+    <span></span>
+    <span></span>
+  </div>
+  <ul class='iphone_bottom-left-speaker'>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+    <li></li>
+  </ul>
+</div>
+<div class='iphone_text' id='text'>WELCOME</div>
+  <script src='jquery/jquery-3.1.1.js'></script>
+</body>
+</html>

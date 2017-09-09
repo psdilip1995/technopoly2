@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <meta charset="UTF-8">
+  <title>TECHNOPOLY ROUND 1</title>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0">
+  <link rel="stylesheet" href="css/round1.css">
+  <script>
+  var XMLObject = false;
+  var BalanceObject = false;
+  var displayObject = false;
+  if(window.XMLHttpRequest){
+	XMLObject = new XMLHttpRequest();
+	BalanceObject = new XMLHttpRequest();
+	displayObject = new XMLHttpRequest();
+  }
+  else if (window.ActiveXObject){
+    XMLObject = new ActiveXObject("Microsoft.XMLHTTP");
+	BalanceObject = new ActiveXObject("Microsoft.XMLHTTP");
+	displayObject = new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  
+  function getUserName(){
+	if(XMLObject){
+			XMLObject.open("GET","round1.jsp?function=getOnlyUserName",true);
+			
+			XMLObject.onreadystatechange = function(){
+				if(XMLObject.readyState == 4 && XMLObject.status == 200){
+					document.getElementById("username").innerHTML="WELCOME "+XMLObject.responseText;
+				}
+			}
+			
+			XMLObject.send(null);
+	}
+  }
+  getUserName();
+  
+  function getBalance(){
+	if(BalanceObject){
+			BalanceObject.open("GET","round1.jsp?function=getBalance",true);
+			
+			BalanceObject.onreadystatechange = function(){
+				if(BalanceObject.readyState == 4 && BalanceObject.status == 200){
+					document.getElementById("balance1").innerHTML="balance : "+BalanceObject.responseText+"$";
+					document.getElementById("balance2").innerHTML="balance : "+BalanceObject.responseText+"$";
+				}
+			}
+			
+			BalanceObject.send(null);
+	}
+  }
+  getBalance();
+  
+  function getQuestions(type){
+    if(type=='violet')
+	document.getElementById("bankmessage").innerHTML="COST:100 REWARD:150";
+	if(type=='blue')
+	document.getElementById("bankmessage").innerHTML="COST:250 REWARD:450";
+	if(type=='red')
+	document.getElementById("bankmessage").innerHTML="COST:500 REWARD:1000";
+	if(type=='gold')
+	document.getElementById("bankmessage").innerHTML="COST:1000 REWARD:2500";
+	if(XMLObject){
+			XMLObject.open("GET","round1.jsp?function=getQuestions&type="+type,true);
+			
+			XMLObject.onreadystatechange = function(){
+				if(XMLObject.readyState == 4 && XMLObject.status == 200){
+					document.getElementById("questiondisplay").innerHTML=XMLObject.responseText;
+				}
+			}
+			
+			XMLObject.send(null);
+	}
+  }
+  
+  function buyQuestion(qid){
+    var qtype;
+    if(qid.charAt(0)=='V') 
+	qtype='violet';
+    if(qid.charAt(0)=='B') 
+	qtype='blue';
+    if(qid.charAt(0)=='R') 
+	qtype='red';
+    if(qid.charAt(0)=='G') 
+	qtype='gold';
+    if(XMLObject){
+			XMLObject.open("GET","round1.jsp?function=buyQuestionFromBank&qid="+qid,true)
+			
+			XMLObject.onreadystatechange = function(){
+				if(XMLObject.readyState == 4 && XMLObject.status == 200){
+					document.getElementById("bankmessage2").innerHTML=XMLObject.responseText;
+					getQuestions(qtype);
+					getBalance();
+					displayQuestionsToSolve();
+				}
+			}
+			
+			XMLObject.send(null);
+	}
+  }
+  function displayQuestionsInMarketToBuy(){
+   if(XMLObject){
+			XMLObject.open("GET","round1.jsp?function=displayQuestionsInMarketToBuy",true)
+			
+			XMLObject.onreadystatechange = function(){
+				if(XMLObject.readyState == 4 && XMLObject.status == 200){
+					document.getElementById("marketquestiondisplay").innerHTML=XMLObject.responseText;
+				}
+			}
+			
+			XMLObject.send(null);
+	}
+  }
+  function displayQuestionsInMarketToSell(){
+    document.getElementById("marketquestiondisplay").innerHTML="Question ID : <input type='text' id='sellqid'/><br>Question cost : <input type='text' id='questionprice'/><br><button onclick=\"sellQuestion()\" style='width:200px;height:30px'>SELL</button>";
+  }
+  function sellQuestion(){
+   var qid=document.getElementById("sellqid").value;
+   var price=document.getElementById("questionprice").value;
+   var regex=/[0-9]+/;
+   var regex2=/[R|G][0-9]+/;
+   if(regex.test(price) && regex2.test(qid)){
+   if(XMLObject){
+			XMLObject.open("GET","round1.jsp?function=sellQuestion&qid="+qid+"&price="+price,true)
+			
+			XMLObject.onreadystatechange = function(){
+				if(XMLObject.readyState == 4 && XMLObject.status == 200){
+					document.getElementById("marketquestiondisplay").innerHTML=XMLObject.responseText;
+					displayQuestionsToSolve();
+				}
+			}
+			
+			XMLObject.send(null);
+	}
+	}
+	else{
+	document.getElementById("questionprice").value="enter only numbers";
+	document.getElementById("sellqid").value="only red and gold questions can be sold in market";
+	}
+  }
+  function displaySoldQuestionsInMarket(){
+	if(XMLObject){
+			XMLObject.open("GET","round1.jsp?function=displaySoldQuestionsInMarket",true)
+			
+			XMLObject.onreadystatechange = function(){
+				if(XMLObject.readyState == 4 && XMLObject.status == 200){
+					document.getElementById("marketquestiondisplay").innerHTML=XMLObject.responseText;
+				}
+			}
+			
+			XMLObject.send(null);
+	}
+  }
+  function buyQuestionFromMarket(qid){
+	if(XMLObject){
+			XMLObject.open("GET","round1.jsp?function=buyQuestionFromMarket&question="+qid,true)
+			
+			XMLObject.onreadystatechange = function(){
+				if(XMLObject.readyState == 4 && XMLObject.status == 200){
+					document.getElementById("marketquestiondisplay").innerHTML=XMLObject.responseText;
+					getBalance();
+					displayQuestionsToSolve();
+				}
+			}
+			
+			XMLObject.send(null);
+	}
+  }
+  function displayQuestionsToSolve(){
+	if(displayObject){
+			displayObject.open("GET","round1.jsp?function=displayQuestionsToSolve",true);
+			
+			displayObject.onreadystatechange = function(){
+				if(displayObject.readyState == 4 && displayObject.status == 200){
+					document.getElementById("workspacequestiondisplay").innerHTML=displayObject.responseText;
+					getBalance();
+				}
+			}
+			
+			displayObject.send(null);
+	}
+  }
+  displayQuestionsToSolve();
+  function solveQuestion(qid){
+    document.getElementById('question-div').style.display="block";
+	if(XMLObject){
+			XMLObject.open("GET","round1.jsp?function=displayquestion&question="+qid,true)
+			
+			XMLObject.onreadystatechange = function(){
+				if(XMLObject.readyState == 4 && XMLObject.status == 200){
+					document.getElementById("displayquestion").innerHTML=XMLObject.responseText;
+					displayoption('a',qid);
+				}
+			}
+			
+			XMLObject.send(null);
+	}
+  }
+  function displayoption(opt,qid){
+	if(XMLObject){
+			XMLObject.open("GET","round1.jsp?function=displayoption&question="+qid+"&option="+opt,true)
+			
+			XMLObject.onreadystatechange = function(){
+				if(XMLObject.readyState == 4 && XMLObject.status == 200){
+					document.getElementById("displayoption"+opt).innerHTML=XMLObject.responseText;
+					if(opt=='a')
+						displayoption('b',qid);
+					else if(opt=='b')
+						displayoption('c',qid);
+					else if(opt=='c')
+						displayoption('d',qid);
+				}
+			}
+			
+			XMLObject.send(null);
+	}
+  }
+  function displaypopup(pop){
+	document.getElementById(pop+"-div").style.display="block";
+	if(pop=='history'){
+		displaylog();
+	}
+  }
+  function closepopup(div){
+	document.getElementById(div).style.display="none";
+	if(div=='question-div'){
+		document.getElementById("displayquestion").innerHTML="Please Wait! Loading...";
+		document.getElementById("displayoptiona").innerHTML="Please Wait! Loading...";
+		document.getElementById("displayoptionb").innerHTML="Please Wait! Loading...";
+		document.getElementById("displayoptionc").innerHTML="Please Wait! Loading...";
+		document.getElementById("displayoptiond").innerHTML="Please Wait! Loading...";
+	}
+  }
+  function displaylog(){
+	if(XMLObject){
+			XMLObject.open("GET","round1.jsp?function=displaylog",true)
+			
+			XMLObject.onreadystatechange = function(){
+				if(XMLObject.readyState == 4 && XMLObject.status == 200){
+					document.getElementById("log-display").innerHTML=XMLObject.responseText;
+				}
+			}
+			
+			XMLObject.send(null);
+	}
+  }
+  </script>
+  
+</head>
+
+<body>
+<div id="#pan1" class="page" style="left:0%;top:0%">
+	<img alt="" src="images/welcome-uncle.png" class="prx" style="left:0%;top:0%;z-index:0">
+	<div class="prx" style="left:0%;top:30%;width:100%;z-index:2;color:#fff;font-size:128px;font-weight:bold;text-align:center">Tech<span style="visibility:hidden">nopoly</span>&nbsp2.0</div>
+	<div class="prx" style="left:6%;top:26%;width:100%;z-index:3;color:#ab843f;font-size:128px;font-weight:bold;text-align:center">nopoly</div>
+	<div class="prx" style="left:30%;top:7%;z-index:2" id="username">welcome User&nbsp </div>
+	<a href="index.jsp" class="prx button" style="left:55%;top:5%;z-index:2">Logout&nbsp </a>
+	<a href="#pan4" class="prx button" style="left:20%;top:15%;z-index:1">Work Space</a>
+	<a href="#pan3" class="prx button" style="left:70%;top:10%;z-index:1">Market</a>
+	<a href="#pan2" class="prx button" style="left:60%;top:70%;z-index:1">Help</a>
+</div>
+<!-- Artfully -->
+<div id="#pan3" class="page" style="left:100%;top:-100%">
+	<img alt="" src="images/bank-uncle.png" class="prx" style="left:0%;top:0%;z-index:0">
+	<button onclick="getQuestions('violet')"><img alt="" src="images/violet-coin.png" class="prx" style="left:30%;top:0%;z-index:3;width:8%;height:24%"></button>
+	<button onclick="getQuestions('blue')"><img alt="" src="images/blue-coin.png" class="prx" style="left:40%;top:0%;z-index:2;width:8%;height:24%"></button>
+	<button onclick="getQuestions('red')"><img alt="" src="images/red-coin.png" class="prx" style="left:50%;top:0%;z-index:3;width:8%;height:24%"></button>
+	<button onclick="getQuestions('gold')"><img alt="" src="images/gold-coin.png" class="prx" style="left:60%;top:0%;z-index:2;width:8%;height:24%"></button>
+	<a href="#pan5" class="prx button" style="left:80%;top:10%;width:100px;width:350px;z-index:1">Market</a>
+	<div class="prx" style="left:20%;top:30%;z-index:1;color:#fff;font-size:164px;font-weight:bold;">Bank&nbsp</div>
+	<div class="prx" style="width:20%;height:6%;left:60%;top:30%" id="bankmessage">click on any coin</div>
+	<div class="prx" style="width:20%;height:6%;left:60%;top:35%" id="bankmessage2"></div>
+	<div class="prx" style="background-color:grey;width:50%;height:50%;left:45%;top:40%;overflow-y:auto" id="questiondisplay"></div>
+	<div class="prx txt" style="left:10%;top:76%;width:40%;z-index:1">you can buy a question from this question bank</div>
+	<div class="prx txt" style="left:10%;top:72%;width:40%;z-index:1" id="balance1">balance : $</div>
+	<a href="#pan1" class="prx button" style="left:10%;top:80%;z-index:1">Back</a>
+</div>
+<!-- android -->
+<div id="#pan5" class="page" style="left:200%;top:-200%">
+	<img alt="" src="images/market-uncle.png" class="prx" style="left:-10%;top:0%;z-index:0;height:100%">
+	<div class="prx" style="left:0%;top:15%;width:70%;z-index:2;color:#fff;font-size:128px;font-weight:bold;text-align:center">market</div>
+	<div class="prx txt" style="left:60%;top:10%;width:40%;z-index:1">
+		 <span style="color:#fff">sell&nbsp&nbsp</span>your questions<br><span style="color:#fff">or</span><br><span style="color:#fff">buy&nbsp&nbsp</span>questions from others 
+	</div>
+	<div class="prx txt" style="left:60%;top:24%;width:40%;z-index:1" id="balance2">balance : $</div>
+	<div class="prx" style="background-color:transparent;width:50%;height:10%;left:45%;top:35%;overflow-y:auto" >
+	<span style="color:#fff"><button onclick="displayQuestionsInMarketToBuy()" style="width:150px;height:50px;margin-left:100px;margin-top:5px">BUY</button></span>
+	<span style="color:#fff"><button onclick="displayQuestionsInMarketToSell()" style="width:150px;height:50px">SELL</button></span>
+	<span style="color:#fff"><button onclick="displaySoldQuestionsInMarket()" style="width:150px;height:50px">MY SHOP</button></span>
+	</div>
+	<div class="prx" style="background-color:grey;width:50%;height:50%;left:45%;top:45%;overflow-y:auto" id="marketquestiondisplay"></div>
+	<a href="#pan3" class="prx button" style="left:20%;top:85%;z-index:1">Back</a>
+</div>
+<!-- intermediators -->
+<div id="#pan4" class="page" style="left:-100%;top:-100%">
+	<img alt="" src="images/workspace-uncle.png" class="prx" style="left:0%;top:0%;width:16%;z-index:0">
+	
+	<div class="prx txt" style="left:30%;top:0%;width:40%;z-index:1;">
+		click on any <span style="color:#fff">coin&nbsp</span> and solve it to earn money!
+		<!--button onclick="displayQuestionsToSolve()">REFRESH</button-->
+	</div>
+	<div class="prx" style="background-color:grey;width:50%;height:50%;left:30%;top:17%;overflow-y:auto" id="workspacequestiondisplay"></div>
+	<a href="#pan1"  class="prx button" style="left:80%;top:80%;z-index:2">Back</a>
+</div>
+<!-- Average conflict -->
+<div id="#pan2" class="page" style="left:100%;top:100%">
+	<!--img alt="" src="images/help-heart.png" class="prx" style="left:60%;top:60%;z-index:3"-->
+	<div class="prx txt" style="left:15%;top:15%;width:25%;z-index:1">
+		<span style="color:#fff">Help</span> Page
+	</div>
+	<div class="prx txt" style="left:35%;top:20%;width:50%;height:60%;background-color:transparent">
+	<button onclick="displaypopup('rules')" style="border-radius:25px;background-color:transparent;color:white;width:20%;height:10%;margin-left:25%">Rules</button><br><br>
+	<button onclick="displaypopup('history')" style="border-radius:25px;background-color:transparent;color:white;width:20%;height:10%;margin-left:25%">My History</button><br><br>
+	<button onclick="displaypopup('redeem')" style="border-radius:25px;background-color:transparent;color:white;width:20%;height:10%;margin-left:25%">Redeem Money</button><br><br>
+	<button onclick="displaypopup('about')" style="border-radius:25px;background-color:transparent;color:white;width:20%;height:10%;margin-left:25%">About</button><br><br>
+	<button onclick="displaypopup('feedback')" style="border-radius:25px;background-color:transparent;color:white;width:20%;height:10%;margin-left:25%">Feedback</button><br>
+	<p style="margin-left:18%">Give Feedback and earn 300$</p>
+	</div>
+	<a href="#pan1"  class="prx button" style="left:20%;top:80%;z-index:1;font-size:4em">Back</a>
+</div>
+
+
+<div id="question-div" class="questionmodal">
+	<div id="displayquestion" style="width:38%;height:96%;margin:1%;background-color:transparent;color:white;border-style:solid;border-color:white;border-width:1px;float:left">Loading! Please Wait.</div>
+	<div id="displayoptiona" style="width:25%;height:35%;margin:1%;background-color:transparent;color:white;border-style:solid;border-color:white;border-width:1px;float:left">A</div>
+	<div id="displayoptionb" style="width:25%;height:35%;margin:1%;background-color:transparent;color:white;border-style:solid;border-color:white;border-width:1px;float:left">B</div>
+	<div id="displayoptionc" style="width:25%;height:35%;margin:1%;background-color:transparent;color:white;border-style:solid;border-color:white;border-width:1px;float:left">C</div>
+	<div id="displayoptiond" style="width:25%;height:35%;margin:1%;background-color:transparent;color:white;border-style:solid;border-color:white;border-width:1px;float:left">D</div>
+	<button onclick="" style="border-radius:25px;background-color:black;color:white;width:20%;height:10%;margin-left:5%">SUBMIT</button>
+	<button onclick="closepopup('question-div')" style="border-radius:25px;background-color:black;color:white;width:20%;height:10%;margin-left:5%">CANCEL</button>
+</div>
+<div id="rules-div" class="modal">
+	<div style="width:90%;height:85%;background-color:white;margin-left:5%;margin-top:2%;overflow-y:auto"></div>
+	<button onclick="closepopup('rules-div')" style="border-radius:25px;background-color:black;color:white;width:20%;height:10%;margin-left:40%">done</button>
+</div>
+<div id="history-div" class="modal">
+	<div id="log-display" style="width:90%;height:85%;background-color:transparent;color:white;margin-left:5%;margin-top:2%;overflow-y:auto">Please Wait!</div>
+	<button onclick="closepopup('history-div')" style="border-radius:25px;background-color:black;color:white;width:20%;height:10%;margin-left:40%">close</button>
+</div>
+<div id="redeem-div" class="modal">
+	<div style="width:90%;height:85%;background-color:white;margin-left:5%;margin-top:2%;overflow-y:auto"></div>
+	<button onclick="closepopup('redeem-div')" style="border-radius:25px;background-color:black;color:white;width:20%;height:10%;margin-left:40%">done</button>
+</div>
+<div id="about-div" class="modal">
+	<div style="width:90%;height:85%;background-color:white;margin-left:5%;margin-top:2%;overflow-y:auto"></div>
+	<button onclick="closepopup('about-div')" style="border-radius:25px;background-color:black;color:white;width:20%;height:10%;margin-left:40%">done</button>
+</div>
+<div id="feedback-div" class="modal">
+	<div style="width:90%;height:85%;background-color:white;margin-left:5%;margin-top:2%;overflow-y:auto"></div>
+	<button onclick="closepopup('feedback-div')" style="border-radius:25px;background-color:black;color:white;width:20%;height:10%;margin-left:40%">done</button>
+</div>
+
+<script src="js/round1.js"></script>
+</body>
+</html>

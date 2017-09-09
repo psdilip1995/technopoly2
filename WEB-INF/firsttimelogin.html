@@ -1,0 +1,96 @@
+<html>
+  <head>
+    <title>Technopoly</title>
+	<link rel="stylesheet" href="css/firsttimelogin.css"/>
+  </head>
+  <body>
+  <script>
+  var XMLObject = false;
+  if(window.XMLHttpRequest)
+	XMLObject = new XMLHttpRequest();
+  else if (window.ActiveXObject)
+    XMLObject = new ActiveXObject("Microsoft.XMLHTTP");
+	
+  function doThing(func,elementid){
+	if(func == 'submit'){
+		var p1 = document.getElementById("password1").value;
+		var p2 = document.getElementById("password2").value;
+		var username=document.getElementById("username").value;
+		var email=document.getElementById("email").value;
+		var phone=document.getElementById("phone").value;
+		var college=document.getElementById("college").value;
+		var teamname=document.getElementById("teamname").value;
+		var refid=document.getElementById("refid").value;
+		if(p1 != p2|| p1.length==0 || p2.length==0 || username.length==0 || email.length==0 || phone.length==0 || college.length==0 || teamname.length==0){
+			if(p1 != p2 || p1.length == 0 || p2.length==0)
+			document.getElementById("message").innerHTML = "<p>Password Miss match!Re-enter Password</p>";
+			if(username.length==0)
+			document.getElementById("message").innerHTML = "<p>Username can not be empty</p>";
+			if(email.length==0)
+			document.getElementById("message").innerHTML = "<p>Email can not be empty</p>";
+			if(phone.length==0)
+			document.getElementById("message").innerHTML = "<p>Phone number can not be empty</p>";
+			if(college.length==0)
+			document.getElementById("message").innerHTML = "<p>college can not be empty</p>";
+			if(teamname.length==0)
+			document.getElementById("message").innerHTML = "<p>Team name can not be empty</p>";
+		}
+		else{
+			document.getElementById("message").innerHTML = "<p>Please wait</p>";
+			if(XMLObject){
+			XMLObject.open("GET","user.jsp?function=submitRegistration&username="+username+"&password="+p1+"&email="+email+"&phone="+phone+"&college="+college+"&teamname="+teamname+"&refid="+refid,true);
+			
+			XMLObject.onreadystatechange = function(){
+				if(XMLObject.readyState == 4 && XMLObject.status == 200){
+					document.getElementById(elementid).innerHTML=XMLObject.responseText;
+				}
+			}
+			
+			XMLObject.send(null);
+			}
+		}
+	}
+  }
+  
+  function getUserId(){
+	if(XMLObject){
+			XMLObject.open("GET","user.jsp?function=getUserId",true);
+			
+			XMLObject.onreadystatechange = function(){
+				if(XMLObject.readyState == 4 && XMLObject.status == 200){
+					document.getElementById("userid").innerHTML=XMLObject.responseText;
+				}
+			}
+			
+			XMLObject.send(null);
+	}
+  }
+  getUserId();
+  </script>
+    <div class="container">
+      <div id="login">
+        <h2><span class="fontawesome-lock"></span>Complete Registration</h2>
+        
+          <fieldset>
+			<div id="message"><p>You are seeing this page bcoz you have logged in for first time,fill the below details</p></div>
+			<div id="userid"><p>User id : xxxxx</p></div>
+			
+			<p><input type="email" id="username" placeholder="username"></p>
+
+            <p><input type="password" id="password1" placeholder="password">
+            <input type="password" id="password2" placeholder="confirm password"></p>
+			
+            <p><input type="email" id="email" placeholder="mail@address.com"></p>
+			<p><input type="email" id="phone" placeholder="phone number"></p>
+			<p><input type="email" id="college" placeholder="College"></p>
+			<p><input type="email" id="teamname" placeholder="Team name"></p>
+			<p><input type="email" id="refid" placeholder="Referal id"></p>
+
+            <p><input type="submit" value="Sign In" onclick="doThing('submit','message')"></p>
+
+          </fieldset>
+        
+      </div>
+    </div>
+  </body>	
+</html>
